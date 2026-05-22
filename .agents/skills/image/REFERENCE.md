@@ -18,10 +18,11 @@
 
 1. Хост-LLM готовит промпт-файл по шаблону `prompts/generate.md`, подставляя плейсхолдеры.
 2. Хост вызывает exec-скрипт: `codex-exec.sh <workdir> <prompt-file> <output-text-file> --sandbox workspace-write --timeout 120`.
-3. Codex CLI генерирует изображение и сохраняет PNG в `<workdir>/.temp/image/<slug>.png`.
-4. Хост читает PNG host file-read'ом и показывает пользователю.
+3. Codex CLI генерирует изображение. PNG сохраняется либо в запрошенный путь (`<workdir>/.temp/image/<slug>.png`), либо в internal cache Codex CLI (`~/.codex/generated_images/{session_id}/ig_*.png`) — зависит от sandbox-окружения.
+4. Хост проверяет файл по ожидаемому пути. Если файла нет — извлекает `session id` из stderr sidecar (`${output-text-file}.stderr`) и копирует из Codex cache.
+5. Хост читает PNG host file-read'ом и показывает пользователю.
 
-Output-text-file содержит текстовое подтверждение от Codex (путь к файлу, размер в байтах). PNG записывается отдельно в workdir.
+Output-text-file содержит текстовое подтверждение от Codex. Stderr sidecar содержит `session id: {UUID}` — уникальный идентификатор вызова, совпадающий с именем директории в Codex cache.
 
 ## Промпт-контракт
 

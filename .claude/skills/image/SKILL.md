@@ -71,11 +71,18 @@ bash $SKILL_ROOT/.agents/scripts/codex-exec.sh $SKILL_ROOT \
 
 ### 6. Обработка результата
 
-| Exit code | Действие |
-|-----------|----------|
-| 0 | Read output-txt для пути к PNG. Read PNG через Read tool — покажи пользователю. Затем `open <путь к PNG>` через Bash — откроет в Preview.app. Сообщи путь к файлу. |
-| 124 | «Генерация заняла больше 2 минут — timeout. Попробуй снова.» |
-| иное | Read `$SKILL_ROOT/.temp/image/output-<TEMP_ID>.txt.stderr` для диагностики. Сообщи ошибку. |
+**Exit 0 — проверь файл:**
+
+1. Проверь файл по ожидаемому пути (`$SKILL_ROOT/.temp/image/<slug>.png`). Если существует — покажи через Read tool. На macOS: `open <путь>`. Сообщи путь.
+
+2. **Если файла нет по ожидаемому пути** — Codex сохранил в свой internal cache. Извлеки session_id из stderr sidecar (`$SKILL_ROOT/.temp/image/output-<TEMP_ID>.txt.stderr`): найди строку `session id: <UUID>`. Затем:
+   ```
+   mkdir -p $SKILL_ROOT/.temp/image
+   cp ~/.codex/generated_images/<SESSION_ID>/ig_*.png $SKILL_ROOT/.temp/image/<slug>.png
+   ```
+   Проверь что файл скопирован (`ls -la`). Покажи через Read tool. Сообщи путь.
+
+**Exit 124** — timeout. **Иное** — Read stderr sidecar для диагностики.
 
 ## Канон
 
