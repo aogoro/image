@@ -66,7 +66,7 @@ metadata:
 bash $SKILL_ROOT/.agents/scripts/codex-exec.sh $SKILL_ROOT \
      $SKILL_ROOT/.temp/image/prompt-<TEMP_ID>.md \
      $SKILL_ROOT/.temp/image/output-<TEMP_ID>.txt \
-     --sandbox workspace-write --timeout 120
+     --sandbox workspace-write --timeout 300
 ```
 
 ### 6. Обработка результата
